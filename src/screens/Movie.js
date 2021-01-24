@@ -99,7 +99,6 @@ function MovieTitle(props) {
 }
 
 function MovieRating(props) {
-  console.log(props);
   const {voteCount, voteAverage} = props;
   const media = voteAverage / 2;
 
