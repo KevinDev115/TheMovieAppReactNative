@@ -47,6 +47,7 @@ export default function StackNavigation(props) {
         component={Search}
         options={{
           title: '',
+          headerTransparent: true,
           headerRight: null,
           headerLeft: () => <ButtonReturn navigation={navigation} />,
         }}
