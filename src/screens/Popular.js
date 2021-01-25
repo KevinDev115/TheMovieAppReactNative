@@ -8,23 +8,23 @@ import {
 } from 'react-native';
 import {Text, Title, Button} from 'react-native-paper';
 import {map} from 'lodash';
-import {Rating} from 'react-native-ratings';
 
 import {getPopularMoviesApi} from '../api/movies';
 import usePreferences from '../hooks/usePreferences';
+import MovieRating from '../components/MovieRating';
 
 //IMGs
 import {BASE_PATH_IMG} from '../utils/constants';
-import starDark from '../assets/img/starDark.png';
-import starLight from '../assets/img/starLight.png';
 import defaultImage from '../assets/img/default-imgage.png';
 
 export default function Popular(props) {
   const {navigation} = props;
   const {theme} = usePreferences();
+
   const [movies, setMovies] = useState(null);
   const [showBtnMore, setShowBtnMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [loadingMovies, setLoadingMovies] = useState(false);
 
   useEffect(() => {
     getPopularMoviesApi(page).then((response) => {
@@ -42,6 +42,11 @@ export default function Popular(props) {
     });
   }, [page]);
 
+  const loadMoreMovies = () => {
+    setLoadingMovies(true);
+    setPage(page + 1);
+  };
+
   return (
     <ScrollView>
       {map(movies, (movie, index) => (
@@ -54,11 +59,12 @@ export default function Popular(props) {
       ))}
       {showBtnMore && (
         <Button
+          loading={loadingMovies}
           mode="outlined"
           contentStyle={styles.loadMoreContainer}
           style={styles.loadMore}
           labelStyle={{color: theme === 'dark' ? '#FFF' : '#000'}}
-          onPress={() => setPage(page + 1)}>
+          onPress={() => loadMoreMovies()}>
           Cargar mas...
         </Button>
       )}
@@ -104,30 +110,9 @@ function Movie(props) {
   );
 }
 
-function MovieRating(props) {
-  const {voteCount, voteAverage, theme} = props;
-  const media = voteAverage / 2;
-
-  return (
-    <View style={styles.viewRating}>
-      <Rating
-        type="custom"
-        ratingImage={theme === 'dark' ? starDark : starLight}
-        ratingColor="#ffc205"
-        ratingBackgroundColor={theme === 'dark' ? '#192734' : '#f0f0f0'}
-        startingValue={media}
-        imageSize={20}
-        style={{marginRight: 15}}
-        readonly={true}
-      />
-      <Text style={{fontSize: 12, color: '#8697a5'}}>{voteCount} votos</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   movie: {
-    marginBottom: 20,
+    marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -137,11 +122,6 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 150,
-  },
-  viewRating: {
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    marginTop: 10,
   },
   loadMoreContainer: {
     paddingTop: 10,

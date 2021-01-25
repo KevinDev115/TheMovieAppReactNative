@@ -1,17 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, Image, StyleSheet, ScrollView} from 'react-native';
 import {Text, Title, IconButton} from 'react-native-paper';
-import {Rating} from 'react-native-ratings';
 import {map} from 'lodash';
 
 import {BASE_PATH_IMG} from '../utils/constants';
 import {getMovieById} from '../api/movies';
 import ModalVideo from '../components/ModalVideo';
-
-import usePreferences from '../hooks/usePreferences';
-
-import starDark from '../assets/img/starDark.png';
-import starLight from '../assets/img/starLight.png';
+import MovieRating from '../components/MovieRating';
 
 export default function Movie(props) {
   const {
@@ -38,10 +33,14 @@ export default function Movie(props) {
         <MovieImage posterPath={movie.poster_path} />
         <MovieTrailer setShowVideo={setShowVideo} />
         <MovieTitle movie={movie} />
-        <MovieRating
-          voteCount={movie.vote_count}
-          voteAverage={movie.vote_average}
-        />
+        <View style={styles.viewRating}>
+          <MovieRating
+            voteCount={movie.vote_count}
+            voteAverage={movie.vote_average}
+            inLine
+            showMedia
+          />
+        </View>
         <Text style={styles.overview}>{movie.overview}</Text>
         <Text style={[styles.overview, {marginBottom: 30}]}>
           Fecha de lanzamiento: {movie.release_date}
@@ -98,30 +97,6 @@ function MovieTitle(props) {
   );
 }
 
-function MovieRating(props) {
-  const {voteCount, voteAverage} = props;
-  const media = voteAverage / 2;
-
-  const {theme} = usePreferences();
-
-  return (
-    <View style={styles.viewRating}>
-      <Rating
-        type="custom"
-        ratingImage={theme === 'dark' ? starDark : starLight}
-        ratingColor="#ffc205"
-        ratingBackgroundColor={theme === 'dark' ? '#192734' : '#f0f0f0'}
-        startingValue={media}
-        imageSize={20}
-        style={{marginRight: 15}}
-        readonly={true}
-      />
-      <Text style={{fontSize: 16, marginRight: 5}}>{media}</Text>
-      <Text style={{fontSize: 12, color: '#8697a5'}}>{voteCount} votos</Text>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   viewPoster: {
     shadowColor: '#000',
@@ -163,8 +138,6 @@ const styles = StyleSheet.create({
   viewRating: {
     marginHorizontal: 30,
     marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   overview: {
     marginHorizontal: 30,
