@@ -23,7 +23,7 @@ export default function CarouselMulti(props) {
       renderItem={(item) => <RenderItem data={item} navigation={navigation} />}
       sliderWidth={width}
       itemWidth={ITEM_WIDTH}
-      firstItem={1}
+      firstItem={2}
       inactiveSlideScale={1}
       inactiveSlideOpacity={1}
     />

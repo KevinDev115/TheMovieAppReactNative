@@ -13,6 +13,7 @@ import {map} from 'lodash';
 import {BASE_PATH_IMG} from '../utils/constants';
 import {getNewsMoviesApi} from '../api/movies';
 import usePreferences from '../hooks/usePreferences';
+import Loading from '../components/Loading';
 
 const {width} = Dimensions.get('window');
 
@@ -46,6 +47,8 @@ export default function News(props) {
     setLoadingMovies(true);
     setPage(page + 1);
   };
+
+  if (!movies) return <Loading />;
 
   return (
     <ScrollView>

@@ -12,6 +12,7 @@ import {map} from 'lodash';
 import {getPopularMoviesApi} from '../api/movies';
 import usePreferences from '../hooks/usePreferences';
 import MovieRating from '../components/MovieRating';
+import Loading from '../components/Loading';
 
 //IMGs
 import {BASE_PATH_IMG} from '../utils/constants';
@@ -46,6 +47,8 @@ export default function Popular(props) {
     setLoadingMovies(true);
     setPage(page + 1);
   };
+
+  if (!movies) return <Loading />;
 
   return (
     <ScrollView>
